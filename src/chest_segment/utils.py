@@ -1,6 +1,8 @@
 from datetime import datetime
 from pathlib import Path
+import random
 
+import numpy as np
 import requests
 import torch
 from joblib import Parallel, delayed
@@ -90,3 +92,12 @@ def get_metrics(config: DictConfig) -> dict[str, nn.Module]:
 
 def timestampt() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+def set_seed(seed=42):
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
