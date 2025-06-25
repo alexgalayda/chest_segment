@@ -1,6 +1,6 @@
+import random
 from datetime import datetime
 from pathlib import Path
-import random
 
 import numpy as np
 import requests
