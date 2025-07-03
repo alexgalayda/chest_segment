@@ -1,4 +1,8 @@
-FROM docker.io/nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+ARG BUILD_TARGET=cpu
+FROM docker.io/nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04 AS gpu-base
+FROM ubuntu:24.04 AS cpu-base
+
+FROM ${BUILD_TARGET}-base
 
 ARG USER_NAME
 ARG USER_ID
@@ -7,6 +11,8 @@ ARG GROUP_ID
 ENV TZ=Asia/Yerevan
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH="/root/.local/bin:/home/${USER_NAME}/.local/bin:${PATH}"
+
+RUN userdel -r ubuntu
 
 RUN groupadd -f -g $GROUP_ID $USER_NAME
 RUN useradd -u $USER_ID -g $GROUP_ID -m $USER_NAME
@@ -27,7 +33,6 @@ ENV UV_HTTP_TIMEOUT=12000
 
 RUN mkdir -p ${UV_CACHE_DIR}
 RUN chown -R ${USER_NAME}:${USER_NAME} ${UV_CACHE_DIR}
-
 
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}/chest_segment
